@@ -1,0 +1,24 @@
+build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get OAS
+        run: |
+          curl https://github.com/Shikshitha/cherrybomb.git -o swagger.json
+
+      - name: Run Docker
+        run: >
+          docker run
+          --mount type=bind,source="$(pwd)",destination=/home public.ecr.aws/blst-security/cherrybomb:latest
+          cherrybomb oas -f /home/swagger.json --min-severity Critical --api-key=84fe0ad9bf8c4e16aa06e21a346e7dde
+
+      - name: Run Param Table
+        run: >
+          docker run
+          --mount type=bind,source="$(pwd)",destination=/home public.ecr.aws/blst-security/cherrybomb:latest
+          cherrybomb param-table -f /home/swagger.json --api-key=84fe0ad9bf8c4e16aa06e21a346e7dde
+
+      - name: Run Ep Table
+        run: >
+          docker run
+          --mount type=bind,source="$(pwd)",destination=/home public.ecr.aws/blst-security/cherrybomb:latest
+          cherrybomb ep-table -f /home/swagger.json --api-key=84fe0ad9bf8c4e16aa06e21a346e7dde
